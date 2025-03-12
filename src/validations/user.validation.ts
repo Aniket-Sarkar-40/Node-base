@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import Joi from "joi";
-import { BaseResponse } from "../types/baseResponse";
+import { BaseResponse } from "../utils/baseResponse";
 
 const userSchema = Joi.object({
   email: Joi.string().email().required(),

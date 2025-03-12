@@ -1,21 +1,9 @@
 import { Request, Response } from "express";
-import { BaseResponse } from "../types/baseResponse";
+import { BaseResponse } from "../utils/baseResponse";
 import { userService } from "@/services/user.service";
 import { TryCatch } from "@/middlewares/error";
-
-interface UserDTO {
-  email: string;
-  name?: string;
-  type: string;
-}
-
-export interface User {
-  id: number;
-  email: string;
-  name: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { UserDTO } from "@/types/user";
+import { toUserDTO } from "@/Mapper/userMapper";
 
 export const createUser = TryCatch(async (req: Request, res: Response) => {
   const { email, name } = req.body;
@@ -33,13 +21,12 @@ export const getUserById = TryCatch(async (req: Request, res: Response) => {
   const { userId } = req.params;
   const user = await userService.getUserById(Number(userId));
 
-  const userDto: UserDTO = { ...user, type: "some" } as UserDTO;
-
   if (!user) {
     return res
       .status(404)
       .json(new BaseResponse(false, undefined, "User not found"));
   }
+  const userDto: UserDTO = toUserDTO(user);
   return res.status(200).json(new BaseResponse(true, userDto));
 });
 
