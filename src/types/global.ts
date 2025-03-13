@@ -1,0 +1,31 @@
+import ErrorHandler from "@/utils/errorHandler";
+import { ValidationErrorItem } from "joi";
+
+// Define the possible literal types for error 'type'
+export type ErrorType =
+  | "string"
+  | "integer"
+  | "BigDecimal"
+  | "Boolean"
+  | "object";
+
+// Define the allowed locations where an error can occur
+export type ErrorLocation = "body" | "pathparam" | "queryparam" | "header";
+
+// Define the possible error codes for the response
+export type ErrorCode =
+  | "PARAMETER_MISSING"
+  | "PARAMETER_INVALID"
+  | "PARAMETER_MISMATCHED"
+  | "NOT_FOUND"
+  | "USER_PERMISSION_DENIED";
+
+// Main API response interface
+export interface ApiResponse {
+  success: boolean;
+  message?: string;
+  errorCode?: ErrorCode;
+  errorMessage?: string; // e.g., "One or more parameter missing" or "User do not have access to perform this operation"
+  errors?: ValidationErrorItem[];
+  err?: ErrorHandler;
+}

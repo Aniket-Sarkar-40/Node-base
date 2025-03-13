@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import ErrorHandler from "@/utils/errorHandler.js";
 import { envMode } from "@/config";
+import { ApiResponse } from "@/types/global";
+import { BaseResponse } from "@/utils/baseResponse";
 
 export const errorMiddleware = (
   err: ErrorHandler,
@@ -9,23 +11,22 @@ export const errorMiddleware = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction
 ) => {
+  console.log(err);
+
   err.message ||= "Internal Server Error";
   err.statusCode = err.statusCode || 500;
 
-  const response: {
-    success: boolean;
-    message: string;
-    error?: ErrorHandler;
-  } = {
+  const response: ApiResponse = {
     success: false,
-    message: err.message,
+    message: err.name,
+    errorMessage: err.message,
   };
 
   if (envMode === "DEVELOPMENT") {
-    response.error = err;
+    response.err = err;
   }
 
-  return res.status(err.statusCode).json(response);
+  return res.status(err.statusCode).json(new BaseResponse(response));
 };
 
 type ControllerType = (

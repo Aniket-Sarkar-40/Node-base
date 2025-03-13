@@ -1,48 +1,35 @@
-import db from "@/db/client";
-
-interface CreateUserInput {
-  email: string;
-  name?: string;
-}
+import {
+  createUserInDb,
+  deleteUserInDb,
+  getAllUsersFromDb,
+  getUserByIdFromDb,
+  updateUserInDb,
+} from "@/repository/user.repository";
+import { CreateUserInput } from "@/types/user";
 
 export const userService = {
   async createUser(input: CreateUserInput) {
-    const user = await db.user.create({
-      data: {
-        email: input.email,
-        name: input.name,
-      },
-    });
+    const user = await createUserInDb(input);
     return user;
   },
 
   async getAllUsers() {
-    const users = await db.user.findMany();
+    const users = await getAllUsersFromDb();
     return users;
   },
 
   async getUserById(userId: number) {
-    const user = await db.user.findUnique({
-      where: { id: userId },
-    });
+    const user = await getUserByIdFromDb(userId);
     return user;
   },
 
   async updateUser(userId: number, input: CreateUserInput) {
-    const updatedUser = await db.user.update({
-      where: { id: userId },
-      data: {
-        email: input.email,
-        name: input.name,
-      },
-    });
+    const updatedUser = await updateUserInDb(userId, input);
     return updatedUser;
   },
 
   async deleteUser(userId: number) {
-    await db.user.delete({
-      where: { id: userId },
-    });
+    await deleteUserInDb(userId);
     return { message: "User deleted successfully" };
   },
 };

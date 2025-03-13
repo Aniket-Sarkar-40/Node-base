@@ -4,3 +4,8 @@ export interface UserDTO {
   name: string | null;
   createdAt: Date;
 }
+
+export interface CreateUserInput {
+  email: string;
+  name?: string;
+}
